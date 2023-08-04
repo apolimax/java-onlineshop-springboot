@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.udemy_course.onlinestore.entities.User;
 import com.udemy_course.onlinestore.repositories.UserRepository;
+import com.udemy_course.onlinestore.services.exceptions.ResourceNotFoundException;
 
 //@Component
 @Service // registrando como component no spring para poder ser injetado como dependência
@@ -21,8 +22,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional<User> obj = repository.findById(id);
-
-        return obj.get();
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User insert(User obj) {
