@@ -13,6 +13,8 @@ import com.udemy_course.onlinestore.repositories.UserRepository;
 import com.udemy_course.onlinestore.services.exceptions.DatabaseException;
 import com.udemy_course.onlinestore.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 //@Component
 @Service // registrando como component no spring para poder ser injetado como dependência
 public class UserService {
@@ -43,9 +45,13 @@ public class UserService {
     }
 
     public User update(Long id, User obj) {
-        User entity = repository.getReferenceById(id);
-        updateUserData(entity, obj);
-        return repository.save(entity);
+        try {
+            User entity = repository.getReferenceById(id);
+            updateUserData(entity, obj);
+            return repository.save(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private void updateUserData(User entity, User obj) {
